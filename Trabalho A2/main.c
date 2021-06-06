@@ -7,7 +7,6 @@ int main(){
     economia_ord sergin_ord[tam];
     int resp, resp2, alvo, busca;
 
-    
     printf ("\n1 - INICIAR\n");
     printf ("2 - SAIR\n\n");
 
@@ -36,45 +35,37 @@ int main(){
 
     quickSort(sergin_ord, 0, tam-1);
 
-    do{
-        printf(" PROGRAMA SERGIN v1.0\n");
-        printf("***********************\n");
-
-        menu();
-        printf("-> ");
-        scanf("%d",&resp);
-
+    do{fflush(stdin);
+        resp = menu();
+    
         if(resp == 1){
             imprimir(sergin);
+            resp2 = voltarMenu();
         }else if(resp == 2){
             imprimir_ord(sergin_ord);
+            resp2 = voltarMenu();
         }else if(resp == 3){
-            printf("INSIRA O ANO PELO QUAL DESEJA BUSCAR:\n");
-            printf("-> ");
-            scanf("%d", &alvo);
+            alvo = buscaAno();
             busca = buscaBinaria(sergin_ord, 0, tam-1, alvo);
             
             if (busca == -1){
-                printf("RA nao existe!!!");
+                printf("ANO nao existe!!!\n");
             }else{
-                printf("ANO: %d\nTAXA: %.2f\n", sergin_ord[busca].ano, sergin_ord[busca].taxa);
+                printf("TAXA: %.2f\n",sergin_ord[busca].taxa);
             }
+            resp2 = voltarMenu();
         }else if(resp == 4){
             printf("O PROGRAMA ESTA SENDO ENCERRADO...");
             sleep(1);
-            break;
+            exit(1);
         }else{
             printf("ESCOLHA INVALIDA\n");
             printf("ESCOLHA UMA DAS OPCOES ACIMA!!!\n");
+            sleep(2);
             system("cls");
-            menu();
-            printf("-> ");
-            scanf("%d",&resp);
+            resp2 = 1;
         }
 
-        printf("\nDESEJA VOLTAR AO MENU?\n1 - SIM\n2 - NAO\n");
-        scanf("%d",&resp2);
-        system("cls");
     } while (resp2 == 1);
     
     printf("O PROGRAMA ESTA SENDO ENCERRADO...");

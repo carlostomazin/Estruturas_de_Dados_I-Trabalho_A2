@@ -24,20 +24,20 @@ int buscaBinaria(economia_ord *vetdados, int inicio, int fim, int alvo){
 void quickSort(economia_ord *vetor, int esquerda, int direita){
 
     int i,j;
-    float pivo;
+    int pivo;
     economia_ord aux;
 
     i = esquerda;
     j = direita;
 
-    pivo = vetor[direita].taxa;
+    pivo = vetor[direita].ano;
 
     if((i == esquerda) && (j == direita)){
         while (i <= j){
-            while ((vetor[i].taxa < pivo) && (i < direita)){
+            while ((vetor[i].ano < pivo) && (i < direita)){
                 i++;
             }
-            while ((vetor[j].taxa > pivo) && (j > esquerda)){
+            while ((vetor[j].ano > pivo) && (j > esquerda)){
                 j--;
             }
             if(i <= j){
@@ -81,10 +81,10 @@ void iniciar(economia *vet, economia_ord *vet_ord){
 
 void imprimir(economia* vet){
 
-    printf("ANO  TAXA\n");
+    printf("ANO:  TAXA:\n");
 
     for(int ctd=0; ctd<tam; ctd++){
-        printf("%d  %.2f\n",vet[ctd].ano,vet[ctd].taxa);
+        printf("%d %.2f%% \n",vet[ctd].ano,vet[ctd].taxa);
     }
 }
 
@@ -97,10 +97,41 @@ void imprimir_ord(economia_ord *vet){
     }
 }
 
-void menu(){
+int menu(){
+    int resp;
+    printf(" PROGRAMA SERGIN v1.0\n");
+    printf("***********************\n");
+
     printf ("-> MENU <- \n");
     printf ("1 - IMPRIMIR DADOS NAO ORDENADOS\n");
     printf ("2 - IMPRIMIR DADOS ORDENADOS DE FORMA CRESCENTE\n");
     printf ("3 - BUSCAR DADOS\n");
     printf ("4 - ENCERRAR PROGRAMA\n");
+
+    printf("-> ");
+    scanf("%d",&resp);
+
+    return resp;
+}
+
+int voltarMenu(){
+    
+    int resp2;
+    
+    printf("\nDESEJA VOLTAR AO MENU?\n1 - SIM\n2 - NAO\n");
+    scanf("%d",&resp2);
+    system("cls");
+
+    return resp2;
+}
+
+int buscaAno(){
+    
+    int alvo;
+    
+    printf("\nINSIRA O ANO PELO QUAL DESEJA BUSCAR:\n");
+    printf("-> ");
+    scanf("%d", &alvo);
+
+    return alvo;
 }

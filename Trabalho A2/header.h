@@ -2,7 +2,7 @@
 
 #define LISTA_H
 
-#define tam 49
+#define tam 50
 
 typedef struct _econ{
     int ano;
@@ -19,6 +19,8 @@ void imprimir(economia*);
 void imprimir_ord(economia_ord*);
 void quickSort(economia_ord*, int, int);
 int buscaBinaria(economia_ord*, int, int, int);
-void menu();
+int menu();
+int voltarMenu();
+int buscaAno();
 
 #endif
