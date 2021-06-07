@@ -6,7 +6,7 @@
 
    - Taxa de crescimento real do PIB per capita (50 anos) - **não ordenado**;
 
-   - -A partir de um arquivo chamado “economia.txt”.
+   - A partir de um arquivo chamado “economia.txt”.
      
      
 
