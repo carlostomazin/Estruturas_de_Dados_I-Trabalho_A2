@@ -2,7 +2,7 @@
 
 ## Requisitos:
 
- - **LINGUAGUEM DO PROGRAMA:**
+ - **LINGUAGUEM DE PROGRAMAÇÃO USADA:**
 
    - Linguagem C.
      
