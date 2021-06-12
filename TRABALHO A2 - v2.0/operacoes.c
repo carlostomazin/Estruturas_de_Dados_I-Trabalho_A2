@@ -1,53 +1,86 @@
 #include "header.h"
 #include <stdio.h>
 #include <conio.h> // Biblioteca de manipulação de caracteres
-#include <windows.h>
+#include <windows.h> //Biblioteca para usar o Sleep e mais algumas funções do cmd
 #include <time.h> // Biblioteca para pegar a hora atual
 
+void iniciar(economia *vet, economia_ord *vet_ord){
+    
+    system("cls"); //função para limpar a tela
+
+    system("color 3"); //função para mudar a cor da fonte do programa (3 = verde água)
+    
+    FILE *arqEnt; //declarando uma variavel do tipo FILE, para trabalhar com um arquivo txt
+    
+    arqEnt = fopen("economia.txt","r"); //usando a variavel "arqEnt" abrir um arquivo txt
+
+    if (arqEnt == NULL){ //se arqEnt for igual a NULL quer dizer que o arquivo está vazio
+        printf("Erro na abertura do arquivo\n"); //mostra uma mensagem se estiver vazio
+        exit(0); //encerra o programa
+    }
+
+    for(ctd=0; ctd<tam ; ctd++){ //um for para ler o arquivo e armazenar nas variaves da struct economia
+        fscanf(arqEnt,"%d %f",&vet[ctd].ano, &vet[ctd].taxa);
+        vet_ord[ctd].ano = vet[ctd].ano;
+        vet_ord[ctd].taxa = vet[ctd].taxa; //fazendo uma copia de uma struct para outra
+    }
+
+    quickSort(vet_ord, 0, tam-1); //ordenando os dados da struct economia_ord, usando quickSort
+
+    inicializaLista(&inicioLista); //chama a função para inicar a lista 
+    
+    printf("\n");
+    for(a=0;a<30;a++){ //faz uma animação de como se estivesse carregando o programa
+        printf("*");
+        Sleep(20);
+    }
+    printf("\nPROOGRAMA CARREGADO COM SUCESSO!\n");
+    printf("*********************************\n\n");
+    system("pause"); //pausa o programa e espera o usuario aperta alguma tecla para continuar
+    system("cls"); //função para limpar a tela
+}
+
 void inicializaLista(No **lista){
-    *lista = NULL;
+    *lista = NULL; //faz com que a lista/inicio dela receba NULL (vazia)
 }
 
 int listaEhVazia(No *lista){
-    if(lista == NULL){
-        return 1;
+    if(lista == NULL){ //se a lista for igual a NULL quer dizer que é vazia...
+        return 1; //assim retornando -1 se for correto a afirmação
     }
     return 0;
 }
 
 void insereInicio(No **lista, int ano, float taxa){
-    No *novo;
+    No *novo; //cria uma variavel do tipo No
     hora(); //função para pegar a hora atual
 
-    novo = (No *)malloc(sizeof(No));
-    novo->ano = ano;
-    novo->taxa = taxa;
+    novo = (No *)malloc(sizeof(No)); //reservando espaço na memoria para a nova variavel
+    novo->ano = ano; //recendo o ano
+    novo->taxa = taxa; //recebendo a taxa
     novo->time_hora = data_hora_atual->tm_hour; //recebendo a hora atual
     novo->time_min = data_hora_atual->tm_min; //recebendo o minuto atual
     novo->time_sec = data_hora_atual->tm_sec; //recebendo o segundos atual
 
-    if(listaEhVazia(*lista)){
+    if(listaEhVazia(*lista)){ //teste para ver se a lista está vazia, chamando a função "listaEhVazia"
         novo->proximo = NULL;
     }else{
-        novo->proximo = *lista;
-    }
-    *lista = novo;
+        novo->proximo = *lista; //se não for vazia o proximo endereço de memoria do novo elemento vai receber a lista...
+    }                           //assim adicionando um elemento no começo da lista 
+    *lista = novo; //e o inicio agora vai ser o novo elemento
 }
 
-void buscaBinaria(economia_ord *vetdados, int inicio, int fim, int alvo){
+int buscaBinaria(economia_ord *vetdados, int inicio, int fim, int alvo){
     int meio;
 
     meio = (int)(inicio + fim) /2;
 
     if(alvo == vetdados[meio].ano){
-        insereInicio(&inicioLista, alvo, vetdados[meio].taxa);
-        printf("TAXA: %.2f\n",vetdados[meio].taxa);
-        return;
+        return meio;
     }
 
     if (inicio >= fim){
-        printf("ANO nao existe!!!\n");
-        return;
+        return -1;
     }
     
     if( alvo < vetdados[meio].ano){
@@ -91,91 +124,60 @@ void quickSort(economia_ord *vetor, int esquerda, int direita){
         quickSort(vetor, i, direita);
 }
 
-void iniciar(economia *vet, economia_ord *vet_ord){
-    
-    system("cls");
-
-    system("color 3");
-    
-    FILE *arqEnt;
-    
-    arqEnt = fopen("economia.txt","r");
-
-    if (arqEnt == NULL){
-        printf("Erro na abertura do arquivo\n");
-        exit(0);
-    }
-
-    for(int ctd=0; ctd<tam ; ctd++){
-        fscanf(arqEnt,"%d %f",&vet[ctd].ano, &vet[ctd].taxa);
-        vet_ord[ctd].ano = vet[ctd].ano;
-        vet_ord[ctd].taxa = vet[ctd].taxa;
-    }
-
-    quickSort(vet_ord, 0, tam-1);
-
-    inicializaLista(&inicioLista);
-    
-
-    printf("\n");
-    for(a=0;a<30;a++){
-        printf("*");
-        Sleep(20);
-    }
-    printf("\nPROOGRAMA CARREGADO COM SUCESSO!\n");
-    printf("*********************************\n\n");
-    system("pause");
-    system("cls");
-}
-
 void imprimir(economia* vet){
     
     printf("\nANO\t  TAXA\t\tANO\t  TAXA\n");
     
-    for(int ctd=0; ctd<25; ctd++){
+    for(ctd=0; ctd<25; ctd++){ //imprimi os dados da struct economia /que é a struct que NÃO ESTÁ ORDENADA/ 
         printf("%d\t%5.2f %%\t\t",vet[ctd].ano,vet[ctd].taxa);
         printf("%d\t%5.2f %%\t\t\n",vet[ctd+25].ano,vet[ctd+25].taxa);
-    }
-    printf("\nDica: Precione a tecla ESQ a qualquer momento para voltar para o menu principal!");
+    }                         //o for indo até 25 para fazer duas colunas
+    printf("\nDica: Precione a tecla ESQ a qualquer momento para voltar para o menu principal! ");
 }
 
 void imprimir_ord(economia_ord *vet){
 
     printf("\nANO\t  TAXA\t\tANO\t  TAXA\n");
 
-    for(int ctd=0; ctd<25; ctd++){
+    for(ctd=0; ctd<25; ctd++){//imprimi os dados da struct economia /que é a struct que NÃO ESTÁ ORDENADA/ 
         printf("%d\t%5.2f %%\t\t",vet[ctd].ano,vet[ctd].taxa);
         printf("%d\t%5.2f %%\t\t\n",vet[ctd+25].ano,vet[ctd+25].taxa);
-    }
-    printf("\nDica: Precione a tecla ESQ a qualquer momento para voltar para o menu principal!");
+    }                        //o for indo até 25 para fazer duas colunas
+    printf("\nDica: Precione a tecla ESQ a qualquer momento para voltar para o menu principal! ");
 }
 
 void historico(No *lista){
 	
-	No *atual = lista;
+	No *atual = lista; //criando um variavel do tipo No e fazendo ela receber a Lista
 	
-	if(listaEhVazia(lista)){
+	if(listaEhVazia(lista)){ //teste para ver se a lista está vazia, chamando a função "listaEhVazia"
 		printf("O historico esta vazia!!!\n");
+        printf("\nDica: Precione a tecla ESQ a qualquer momento para voltar para o menu principal! ");
 		return;
 	}
 
     printf("HISTORICO: \n\n");
-	while(atual != NULL){
-        printf("%d:%d:%d", atual->time_hora, atual->time_min, atual->time_sec);//hora//minutos//segundos
-		printf("\t- Ano: %d Taxa: %.2f\n\n", atual->ano, atual->taxa);
-		atual = atual->proximo;
+	while(atual != NULL){ //um while para ir até o ultimo elemento da lista
+        if(atual->taxa == -1){ //se taxa for igual a -1 ira aparecer uma mensagem de que o ano não existe na base de dados
+            printf("%d:%d:%d  ", atual->time_hora, atual->time_min, atual->time_sec);//imprimindo a hora, minutos, segundos atuais
+		    printf("Ano: %d - Nao existe na base de dados!\n\n", atual->ano); //imprimindo o ano e taxa
+        }else{
+            printf("%d:%d:%d  ", atual->time_hora, atual->time_min, atual->time_sec);//imprimindo a hora, minutos, segundos atuais
+		    printf("Ano: %d - Taxa: %.2f\n\n", atual->ano, atual->taxa); //imprimindo o ano e taxa
+        }
+		atual = atual->proximo; //atribuição para rodar o while
 	}
-	printf("\nDica: Precione a tecla ESQ a qualquer momento para voltar para o menu principal!");
+	printf("\nDica: Precione a tecla ESQ a qualquer momento para voltar para o menu principal! ");
 }
 
 void menu(){
 
     opcao=0;
     b=2;
-    co=0; // coluna 
-    L=4; // linha
+    co=0; //coluna 
+    L=4; //linha
     L2=L;
-    L3=L+4;
+    L3=L+4; //quantidade de linha 
     L4=L;
 
     system("cls");
@@ -183,45 +185,59 @@ void menu(){
     printf("\n\n\t>>> MENU PRINCIPAL <<<\n\n");
     
     gotoxy(co+4,L);     // co é a coluna de inicio do menu e L é a linha de inico do menu
-    printf("1 - IMPRIMIR DADOS NAO ORDENADOS");
+    printf(" - IMPRIMIR DADOS NAO ORDENADOS");
     gotoxy(co+4,L+1);
-    printf("2 - IMPRIMIR DADOS ORDENADOS");
+    printf(" - IMPRIMIR DADOS ORDENADOS");
     gotoxy(co+4,L+2);
-    printf("3 - BUSCAR UM DADO");
+    printf(" - BUSCAR UM DADO");
     gotoxy(co+4,L+3);
-    printf("4 - HISTORICO");
+    printf(" - HISTORICO");
     gotoxy(co+4,L+4);
-    printf("5 - ENCERRAR PROGRAMA");
+    printf(" - ENCERRAR PROGRAMA");
 }
 
 void voltarMenu(){
     
-    do{
-        if(kbhit){a=getch();}
-    }while(a != 27);
+    do{ //usa um do while para ver se a tecla esq foi pressionada
+        if(kbhit){ //um if que usa o "kbhit", essa função verifica se alguma tecla foi pressionada
+            a=getch(); //se sim a variavel a armazena essa tecla
+        }
+    }while(a != 27); //e faz uma verificação apartir do valor ASCII da tecla ESQ /ESQ = 27 na tebela ASCII/
 }
 
 void sairMenu(){
     
-    system("cls");
+    system("cls"); 
 
     printf("Voce pediu para sair, fechando programa...");
 
-    for(a=0;a<10;a++){
+    for(a=0;a<10;a++){ //faz uma animação de como se estivesse carregando o programa
         printf(".");
         Sleep(200);
     }
     printf("!\n\n");
-	exit(1);
+	exit(0); //encerra o programa
 }
 
 void buscaAno(int alvo, economia_ord *vet){
     
+    int result;
+    
     printf("\nINSIRA O ANO PELO QUAL DESEJA BUSCAR:\n");
     printf("-> ");
-    scanf("%d", &alvo);
+    scanf("%d", &alvo); //pede para o usuario digitar um ano e esse ano será passado para a função buscaBinaria
 
-    buscaBinaria(vet, 0, tam-1, alvo);
+    result = buscaBinaria(vet, 0, tam-1, alvo); //chama a função buscaBinaria para verificar se o ano tem uma taxa
+
+    if (result == -1){ //se o ano pesquisado não tiver taxa a função ira retornar -1 e falar que o ano não existe
+        insereInicio(&inicioLista, alvo, result);//chama a função insereInicio para armazenar o valor /mesmo não existindo o ano
+        printf("ANO nao existe!!!\n");
+        printf("\nDica: Precione a tecla ESQ a qualquer momento para voltar para o menu principal! ");
+    }else{ //se o ano existir ira chamar a função insereInicio para armazenar o ano e taxa
+        insereInicio(&inicioLista, alvo, vet[result].taxa);
+        printf("TAXA: %.2f\n",vet[result].taxa); //mostra o resultado na tela
+        printf("\nDica: Precione a tecla ESQ a qualquer momento para voltar para o menu principal! ");
+    }
 }
 
 void funcaoSetas(){
