@@ -1,7 +1,38 @@
 #include "header.h"
 #include <stdio.h>
 #include <conio.h> // Biblioteca de manipulação de caracteres
-#include <windows.h> 
+#include <windows.h>
+#include <time.h> // Biblioteca para pegar a hora atual
+
+void inicializaLista(No **lista){
+    *lista = NULL;
+}
+
+int listaEhVazia(No *lista){
+    if(lista == NULL){
+        return 1;
+    }
+    return 0;
+}
+
+void insereInicio(No **lista, int ano, float taxa){
+    No *novo;
+    hora(); //função para pegar a hora atual
+
+    novo = (No *)malloc(sizeof(No));
+    novo->ano = ano;
+    novo->taxa = taxa;
+    novo->time_hora = data_hora_atual->tm_hour; //recebendo a hora atual
+    novo->time_min = data_hora_atual->tm_min; //recebendo o minuto atual
+    novo->time_sec = data_hora_atual->tm_sec; //recebendo o segundos atual
+
+    if(listaEhVazia(*lista)){
+        novo->proximo = NULL;
+    }else{
+        novo->proximo = *lista;
+    }
+    *lista = novo;
+}
 
 void buscaBinaria(economia_ord *vetdados, int inicio, int fim, int alvo){
     int meio;
@@ -9,6 +40,7 @@ void buscaBinaria(economia_ord *vetdados, int inicio, int fim, int alvo){
     meio = (int)(inicio + fim) /2;
 
     if(alvo == vetdados[meio].ano){
+        insereInicio(&inicioLista, alvo, vetdados[meio].taxa);
         printf("TAXA: %.2f\n",vetdados[meio].taxa);
         return;
     }
@@ -23,7 +55,6 @@ void buscaBinaria(economia_ord *vetdados, int inicio, int fim, int alvo){
     }else{
         buscaBinaria(vetdados,meio+1,fim,alvo);
     }
-
 }
 
 void quickSort(economia_ord *vetor, int esquerda, int direita){
@@ -83,10 +114,13 @@ void iniciar(economia *vet, economia_ord *vet_ord){
 
     quickSort(vet_ord, 0, tam-1);
 
+    inicializaLista(&inicioLista);
+    
+
     printf("\n");
     for(a=0;a<30;a++){
         printf("*");
-        Sleep(50);
+        Sleep(20);
     }
     printf("\nPROOGRAMA CARREGADO COM SUCESSO!\n");
     printf("*********************************\n\n");
@@ -102,6 +136,7 @@ void imprimir(economia* vet){
         printf("%d\t%5.2f %%\t\t",vet[ctd].ano,vet[ctd].taxa);
         printf("%d\t%5.2f %%\t\t\n",vet[ctd+25].ano,vet[ctd+25].taxa);
     }
+    printf("\nDica: Precione a tecla ESQ a qualquer momento para voltar para o menu principal!");
 }
 
 void imprimir_ord(economia_ord *vet){
@@ -112,17 +147,35 @@ void imprimir_ord(economia_ord *vet){
         printf("%d\t%5.2f %%\t\t",vet[ctd].ano,vet[ctd].taxa);
         printf("%d\t%5.2f %%\t\t\n",vet[ctd+25].ano,vet[ctd+25].taxa);
     }
+    printf("\nDica: Precione a tecla ESQ a qualquer momento para voltar para o menu principal!");
+}
 
+void historico(No *lista){
+	
+	No *atual = lista;
+	
+	if(listaEhVazia(lista)){
+		printf("O historico esta vazia!!!\n");
+		return;
+	}
+
+    printf("HISTORICO: \n\n");
+	while(atual != NULL){
+        printf("%d:%d:%d", atual->time_hora, atual->time_min, atual->time_sec);//hora//minutos//segundos
+		printf("\t- Ano: %d Taxa: %.2f\n\n", atual->ano, atual->taxa);
+		atual = atual->proximo;
+	}
+	printf("\nDica: Precione a tecla ESQ a qualquer momento para voltar para o menu principal!");
 }
 
 void menu(){
 
     opcao=0;
     b=2;
-    co=0;
-    L=4;
+    co=0; // coluna 
+    L=4; // linha
     L2=L;
-    L3=L+3;
+    L3=L+4;
     L4=L;
 
     system("cls");
@@ -136,8 +189,9 @@ void menu(){
     gotoxy(co+4,L+2);
     printf("3 - BUSCAR UM DADO");
     gotoxy(co+4,L+3);
-    printf("4 - ENCERRAR PROGRAMA");
-
+    printf("4 - HISTORICO");
+    gotoxy(co+4,L+4);
+    printf("5 - ENCERRAR PROGRAMA");
 }
 
 void voltarMenu(){
@@ -175,7 +229,7 @@ void funcaoSetas(){
     do{                       /*loop para movimentar a seta*/
         gotoxy(co+2,L);       /*gotoxy posiciona o cursor, o co é a coluna e L é a linha onde imprimir a seta*/
         printf("-%c",16);     /*imprime a seta*/
-        gotoxy(0,8);         /*posiciona o cursor fora da tela para ele não ficar piscando*/
+        gotoxy(0,10);         /*posiciona o cursor fora da tela para ele não ficar piscando*/
         if(kbhit){a=getch();} /*se alguma tecla foi pressionada a igual a tecla*/
         if(a == 80){          /*80 é valor do cactere seta p/baixo do teclado*/
             L2=L;             /*L2 é posição onde estava a seta para apagar senao fica duas setas*/
@@ -197,4 +251,15 @@ void funcaoSetas(){
                                   /*esta na linha 2*/
         }
     }while(opcao == 0);       /*repete enquanto opcao igual a zero*/
+}
+
+void hora(){
+
+    //variável do tipo time_t para armazenar o tempo em segundos  
+    time_t segundos;
+  
+    //obtendo o tempo em segundos  
+    time(&segundos);
+
+    data_hora_atual = localtime(&segundos);
 }

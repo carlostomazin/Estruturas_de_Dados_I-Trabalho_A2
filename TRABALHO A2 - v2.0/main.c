@@ -25,6 +25,10 @@ int main(){
             voltarMenu();
             break;
         case 4:
+            historico(inicioLista);
+            voltarMenu();
+            break;
+        case 5:
             sairMenu();
         default:
             printf("Voce deve escolher uma opcao valida\n");
